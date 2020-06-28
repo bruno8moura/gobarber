@@ -15,6 +15,8 @@ usersRoutes.post('/', async (request, response) => {
 
         const userCreated = await new CreateUserService().execute(newUser);
 
+        delete userCreated.password;
+
         return response.status(201).json(userCreated).end();
     } catch (error) {
         return response.status(400).json({ message: error.message }).end();
