@@ -3,6 +3,7 @@ import path from 'path';
 import { promises as fs } from 'fs'; // Enable the use of promises intead callbacks, so we use await.
 import User from '../models/User';
 import uploadConfig from '../config/upload.files';
+import AppError from '../errors/AppError';
 
 interface Request {
     userId: string;
@@ -14,7 +15,7 @@ class UpdateUserAvatarService {
         const user = await repository.findOne({ where: { id: userId } });
 
         if (!user) {
-            throw new Error('User logged not found.');
+            throw new AppError('User logged not found.', 401);
         }
 
         if (user.avatar) {

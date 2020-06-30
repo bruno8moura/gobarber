@@ -38,19 +38,15 @@ usersRoutes.patch(
             file: { filename },
         } = request;
 
-        try {
-            const service = new UpdateUserAvatarService();
-            const user = await service.execute({
-                userId: id,
-                avartarFileName: filename,
-            });
+        const service = new UpdateUserAvatarService();
+        const user = await service.execute({
+            userId: id,
+            avartarFileName: filename,
+        });
 
-            delete user.password;
+        delete user.password;
 
-            return response.json({ user }).end();
-        } catch (error) {
-            return response.status(400).json({ message: error.message }).end();
-        }
+        return response.json({ user }).end();
     },
 );
 
