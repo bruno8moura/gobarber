@@ -138,4 +138,8 @@ dist
 # Ignore all local history of files
 .history
 
+## Temporary files
+tmp/*
+!tmp/.gitkeep
+
 # End of https://www.toptal.com/developers/gitignore/api/node,visualstudiocode,git
