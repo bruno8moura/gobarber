@@ -25,4 +25,7 @@ export default class User {
 
     @UpdateDateColumn({ name: 'updated_at' })
     updatedAt: Date;
+
+    @Column(/* varchar is parttern */)
+    avatar: string;
 }
