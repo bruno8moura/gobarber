@@ -1,9 +1,9 @@
 import { getRepository } from 'typeorm';
 import path from 'path';
 import { promises as fs } from 'fs'; // Enable the use of promises intead callbacks, so we use await.
-import User from '../models/User';
-import uploadConfig from '../config/upload.files';
-import AppError from '../errors/AppError';
+import User from '@modules/users/infra/typeorm/entities/User';
+import uploadConfig from '@config/upload.files';
+import AppError from '@shared/errors/AppError';
 
 interface Request {
     userId: string;
