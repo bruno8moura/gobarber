@@ -32,7 +32,7 @@
         "class-methods-use-this":"off",
         "@typescript-eslint/no-unused-vars": ["error", {
             "argsIgnorePatterns": "_"
-        }],
+        }]
     },
     "settings": {
         "import/resolver": {
