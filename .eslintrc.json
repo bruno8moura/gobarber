@@ -19,6 +19,7 @@
         "prettier"
     ],
     "rules": {
+        "@typescript-eslint/interface-name-prefix": ["error", {"prefixWithI": "always"}],
         "import/extensions": [
             "error",
             "ignorePackages",
@@ -31,7 +32,7 @@
         "class-methods-use-this":"off",
         "@typescript-eslint/no-unused-vars": ["error", {
             "argsIgnorePatterns": "_"
-        }]
+        }],
     },
     "settings": {
         "import/resolver": {

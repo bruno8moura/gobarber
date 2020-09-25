@@ -4,15 +4,16 @@ import { promises as fs } from 'fs'; // Enable the use of promises intead callba
 import User from '@modules/users/infra/typeorm/entities/User';
 import uploadConfig from '@config/upload.files';
 import AppError from '@shared/errors/AppError';
+import IUsersRepository from "../repositories/IUsersRepository";
 
-interface Request {
+interface IRequest {
     userId: string;
     avartarFileName: string;
 }
 class UpdateUserAvatarService {
-    public async execute({ userId, avartarFileName }: Request): Promise<User> {
-        const repository = getRepository(User);
-        const user = await repository.findOne({ where: { id: userId } });
+    constructor(private usersRepository: IUsersRepository){}
+    public async execute({ userId, avartarFileName }: IRequest): Promise<User> {
+        const user = await this.usersRepository.findById(userId);
 
         if (!user) {
             throw new AppError('User logged not found.', 401);
@@ -32,7 +33,7 @@ class UpdateUserAvatarService {
 
         user.avatar = avartarFileName;
 
-        await repository.save(user); // update the user
+        await this.usersRepository.save(user); // update the user
 
         return user;
     }
