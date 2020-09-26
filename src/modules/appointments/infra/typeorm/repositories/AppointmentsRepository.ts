@@ -17,11 +17,17 @@ export default class AppointmentsRepository implements IAppointmentsRepository {
         return this.ormRepository.find();
     }
 
-    public async create(data: ICreateAppointmentDTO): Promise<IGetAppointmentDTO> {
+    public async create(
+        data: ICreateAppointmentDTO,
+    ): Promise<IGetAppointmentDTO> {
         const newAppointment = this.ormRepository.create(data);
         await this.ormRepository.save(newAppointment);
 
-        return {id: newAppointment.id, date: newAppointment.date, provider: newAppointment.provider.name};
+        return {
+            id: newAppointment.id,
+            date: newAppointment.date,
+            provider: newAppointment.providerId,
+        };
     }
 
     public async findByDate(date: Date): Promise<Appointment | undefined> {

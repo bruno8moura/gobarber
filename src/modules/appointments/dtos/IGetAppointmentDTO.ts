@@ -1,5 +1,7 @@
+import IGetUserDTO from '@modules/users/dtos/IGetUserDTO';
+
 export default interface IGetAppointmentDTO {
     id: string;
-    provider: string;
+    provider: IGetUserDTO;
     date: Date;
 }

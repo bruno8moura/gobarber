@@ -1,7 +1,7 @@
 import { startOfHour } from 'date-fns';
-import { getRepository } from 'typeorm';
-import User from '@modules/users/infra/typeorm/entities/User';
 import AppError from '@shared/errors/AppError';
+import { inject, injectable } from 'tsyringe';
+import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 import IAppointmentsRepository from '../repositories/IAppointmentsRepository';
 import IGetAppointmentDTO from '../dtos/IGetAppointmentDTO';
 
@@ -10,21 +10,27 @@ interface Request {
     providerId: string;
 }
 
+@injectable()
 export default class CreateAppointmentService {
-    constructor(private appointmentsRepository: IAppointmentsRepository){}
+    constructor(
+        @inject('AppointmentsRepository')
+        private appointmentsRepository: IAppointmentsRepository,
+        @inject('UsersRepository')
+        private usersRepository: IUsersRepository,
+    ) {}
 
-    public async execute({ date, providerId }: Request): Promise<IGetAppointmentDTO> {
+    public async execute({
+        date,
+        providerId,
+    }: Request): Promise<IGetAppointmentDTO> {
         const repository = this.appointmentsRepository;
-        const usersRepository = getRepository(User);
         const appointmentDate = startOfHour(date);
 
         const appointmentAlreadyRecorded = await repository.findByDate(
             appointmentDate,
         );
 
-        const providerFound = await usersRepository.findOne({
-            where: { id: providerId },
-        });
+        const providerFound = await this.usersRepository.findById(providerId);
 
         if (!providerFound) {
             throw new AppError('Provider not found.');
@@ -34,11 +40,15 @@ export default class CreateAppointmentService {
             throw new AppError('This appointment is already booked.');
         }
 
-        const newAppointment = repository.create({
+        const newAppointment = await repository.create({
             providerId,
             date: appointmentDate,
         });
 
-        return newAppointment;
+        return {
+            id: newAppointment.id,
+            date: newAppointment.date,
+            provider: { id: providerFound.id, name: providerFound.name },
+        };
     }
 }
