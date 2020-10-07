@@ -48,7 +48,11 @@ export default class CreateAppointmentService {
         return {
             id: newAppointment.id,
             date: newAppointment.date,
-            provider: { id: providerFound.id, name: providerFound.name },
+            provider: {
+                id: providerFound.id,
+                name: providerFound.name,
+                email: providerFound.email,
+            },
         };
     }
 }
