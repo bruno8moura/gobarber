@@ -4,6 +4,7 @@ import Appointment from '@modules/appointments/infra/typeorm/entities/Appointmen
 import IAppointmentsRepository from '@modules/appointments/repositories/IAppointmentsRepository';
 import ICreateAppointmentDTO from '@modules/appointments/dtos/ICreateAppointmentDTO';
 import IGetAppointmentDTO from '@modules/appointments/dtos/IGetAppointmentDTO';
+import { isEqual } from 'date-fns';
 
 export default class FakeAppointmentsRepository
     implements IAppointmentsRepository {
@@ -44,7 +45,9 @@ export default class FakeAppointmentsRepository
     public async findByDate(
         date: Date,
     ): Promise<IGetAppointmentDTO | undefined> {
-        const foundAppointment = this.appointments.find(el => el.date === date);
+        const foundAppointment = this.appointments.find(el =>
+            isEqual(el.date, date),
+        );
 
         if (!foundAppointment) return undefined;
 
