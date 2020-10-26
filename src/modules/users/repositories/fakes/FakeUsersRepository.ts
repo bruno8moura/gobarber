@@ -20,22 +20,27 @@ export default class FakeUsersRepository implements IUsersRepository {
     }
 
     async save(user: User): Promise<User> {
-        console.log(user);
+        const foundIndex = this.users.findIndex(
+            foundUser => foundUser.id === user.id,
+        );
 
-        return new User();
+        this.users[foundIndex] = user;
+
+        return user;
     }
 
     public async create(data: ICreateUserDTO): Promise<IGetUserDTO> {
         const newUser = new User();
         const createdAt = new Date();
-        Object.assign(newUser, {
-            id: uuid(),
-            name: data.name,
-            password: data.password,
-            email: data.email,
-            createdAt,
-            updatedAt: createdAt,
-        });
+        Object.assign(
+            newUser,
+            {
+                id: uuid(),
+                createdAt,
+                updatedAt: createdAt,
+            },
+            data,
+        );
 
         this.users.push(newUser);
 
