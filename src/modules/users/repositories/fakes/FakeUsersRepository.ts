@@ -16,6 +16,7 @@ export default class FakeUsersRepository implements IUsersRepository {
             id: foundUser?.id,
             name: foundUser.name,
             email: foundUser.email,
+            password: foundUser.password,
         };
     }
 
@@ -44,7 +45,12 @@ export default class FakeUsersRepository implements IUsersRepository {
 
         this.users.push(newUser);
 
-        return { id: newUser.id, name: newUser.name, email: newUser.email };
+        return {
+            id: newUser.id,
+            name: newUser.name,
+            email: newUser.email,
+            password: newUser.password,
+        };
     }
 
     public async findByEmail(email: string): Promise<IGetUserDTO | undefined> {
@@ -55,6 +61,7 @@ export default class FakeUsersRepository implements IUsersRepository {
             id: foundUser?.id,
             name: foundUser.name,
             email: foundUser.email,
+            password: foundUser.password,
         };
     }
 }

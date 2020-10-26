@@ -34,7 +34,12 @@ class CreateUserService {
             password: hashedPassword,
         });
 
-        return { id: newUser.id, name: newUser.name, email: newUser.email };
+        return {
+            id: newUser.id,
+            name: newUser.name,
+            email: newUser.email,
+            password: newUser.password,
+        };
     }
 }
 

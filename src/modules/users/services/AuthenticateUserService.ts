@@ -2,9 +2,9 @@ import { compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 import AppError from '@shared/errors/AppError';
 import config from '@config/auth';
-import User from '@modules/users/infra/typeorm/entities/User';
 import { inject, injectable } from 'tsyringe';
 import IUsersRepository from '../repositories/IUsersRepository';
+import IGetUserDTO from '../dtos/IGetUserDTO';
 
 interface IRequest {
     email: string;
@@ -12,7 +12,7 @@ interface IRequest {
 }
 
 interface IResponse {
-    user: User;
+    user: IGetUserDTO;
     token: string;
 }
 
@@ -47,7 +47,6 @@ export default class AuthenticateUserService {
             },
         );
 
-        const Iresponse = { user, token };
-        return Iresponse;
+        return { user, token };
     }
 }
