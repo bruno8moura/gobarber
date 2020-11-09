@@ -5,7 +5,7 @@ import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 import IAppointmentsRepository from '../repositories/IAppointmentsRepository';
 import IGetAppointmentDTO from '../dtos/IGetAppointmentDTO';
 
-interface Request {
+interface IRequest {
     date: Date;
     providerId: string;
 }
@@ -22,7 +22,7 @@ export default class CreateAppointmentService {
     public async execute({
         date,
         providerId,
-    }: Request): Promise<IGetAppointmentDTO> {
+    }: IRequest): Promise<IGetAppointmentDTO> {
         const repository = this.appointmentsRepository;
         const appointmentDate = startOfHour(date);
 
@@ -52,6 +52,7 @@ export default class CreateAppointmentService {
                 id: providerFound.id,
                 name: providerFound.name,
                 email: providerFound.email,
+                password: providerFound.password,
             },
         };
     }
