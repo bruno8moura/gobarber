@@ -17,10 +17,11 @@ export default class FakeUsersRepository implements IUsersRepository {
             name: foundUser.name,
             email: foundUser.email,
             password: foundUser.password,
+            avatar: foundUser.avatar,
         };
     }
 
-    async save(user: User): Promise<User> {
+    async save(user: User): Promise<IGetUserDTO> {
         const foundIndex = this.users.findIndex(
             foundUser => foundUser.id === user.id,
         );
@@ -50,6 +51,7 @@ export default class FakeUsersRepository implements IUsersRepository {
             name: newUser.name,
             email: newUser.email,
             password: newUser.password,
+            avatar: newUser.avatar,
         };
     }
 
@@ -62,6 +64,7 @@ export default class FakeUsersRepository implements IUsersRepository {
             name: foundUser.name,
             email: foundUser.email,
             password: foundUser.password,
+            avatar: foundUser.avatar,
         };
     }
 }

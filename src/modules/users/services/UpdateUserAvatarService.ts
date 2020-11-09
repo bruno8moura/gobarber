@@ -1,9 +1,7 @@
-import path from 'path';
-import { promises as fs } from 'fs'; // Enable the use of promises intead callbacks, so we use await.
 import User from '@modules/users/infra/typeorm/entities/User';
-import uploadConfig from '@config/upload.files';
 import AppError from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
+import IStorageProvider from '@shared/container/providers/StorageProvider/models/IStorageProvider';
 import IUsersRepository from '../repositories/IUsersRepository';
 
 interface IRequest {
@@ -15,6 +13,8 @@ class UpdateUserAvatarService {
     constructor(
         @inject('UsersRepository')
         private usersRepository: IUsersRepository,
+        @inject('StorageProvider')
+        private storageProvider: IStorageProvider,
     ) {}
 
     public async execute({ userId, avartarFileName }: IRequest): Promise<User> {
@@ -25,20 +25,30 @@ class UpdateUserAvatarService {
         }
 
         if (user.avatar) {
-            const userAvatarFilePath = path.join(
-                uploadConfig.directory,
-                user.avatar,
-            );
-            const userAvatarFileExists = await fs.stat(userAvatarFilePath);
-
-            if (userAvatarFileExists) {
-                await fs.unlink(userAvatarFilePath); // delete a file
-            }
+            await this.storageProvider.deleteFile(user.avatar);
         }
 
-        user.avatar = avartarFileName;
+        const fileName = await this.storageProvider.saveFile(avartarFileName);
+        user.avatar = fileName;
 
-        await this.usersRepository.save(user); // update the user
+        const {
+            name,
+            avatar,
+            password,
+            email,
+            id,
+            createdAt,
+            updatedAt,
+        } = user;
+        await this.usersRepository.save({
+            name,
+            avatar,
+            password,
+            email,
+            id,
+            createdAt,
+            updatedAt,
+        }); // update the user
 
         return user;
     }
