@@ -2,6 +2,7 @@ import FakeUsersRepository from '@modules/users/repositories/fakes/FakeUsersRepo
 import CreateUserService from '@modules/users/services/CreateUserService';
 import ICreateUserDTO from '@modules/users/dtos/ICreateUserDTO';
 import AppError from '@shared/errors/AppError';
+import FakeHashProvider from '@modules/users/providers/HashProviders/fakes/FakeHashProvider';
 import CreateAppointmentService from './CreateAppointmentService';
 import FakeAppointmentsRepository from '../repositories/fakes/FakeAppointmentsRepository';
 
@@ -9,6 +10,7 @@ describe('CreateAppointment', () => {
     it('should be able to create a new appointment', async () => {
         const appointmentsRepository = new FakeAppointmentsRepository();
         const usersRepository = new FakeUsersRepository();
+        const fakeHashProvider = new FakeHashProvider();
 
         const newUser: ICreateUserDTO = {
             name: 'Bruno Moura',
@@ -18,6 +20,7 @@ describe('CreateAppointment', () => {
 
         const createdUser = await new CreateUserService(
             usersRepository,
+            fakeHashProvider,
         ).execute(newUser);
 
         const newAppointment = await new CreateAppointmentService(
@@ -34,6 +37,7 @@ describe('CreateAppointment', () => {
     it('should not be able to create two appoiments on the same time', async () => {
         const fakeAppointmentRepository = new FakeAppointmentsRepository();
         const fakeUsersRepository = new FakeUsersRepository();
+        const fakeHashProvider = new FakeHashProvider();
         const createAppointment = new CreateAppointmentService(
             fakeAppointmentRepository,
             fakeUsersRepository,
@@ -47,6 +51,7 @@ describe('CreateAppointment', () => {
 
         const createdUser = await new CreateUserService(
             fakeUsersRepository,
+            fakeHashProvider,
         ).execute(newUser);
 
         const appointmentDate = new Date();

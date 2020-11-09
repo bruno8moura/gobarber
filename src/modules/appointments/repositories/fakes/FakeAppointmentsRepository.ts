@@ -14,7 +14,7 @@ export default class FakeAppointmentsRepository
         return this.appointments.map(({ id, date, providerId }) => ({
             id,
             date,
-            provider: { id: providerId, name: '', email: '' },
+            provider: { id: providerId, name: '', email: '', password: '' },
         }));
     }
 
@@ -38,7 +38,7 @@ export default class FakeAppointmentsRepository
         return {
             id: newAppointment.id,
             date: newAppointment.date,
-            provider: { id: providerId, name: '', email: '' },
+            provider: { id: providerId, name: '', email: '', password: '' },
         };
     }
 
@@ -54,7 +54,12 @@ export default class FakeAppointmentsRepository
         return {
             id: foundAppointment?.id,
             date: foundAppointment?.date,
-            provider: { id: foundAppointment?.providerId, name: '', email: '' },
+            provider: {
+                id: foundAppointment?.providerId,
+                name: '',
+                email: '',
+                password: '',
+            },
         };
     }
 }
