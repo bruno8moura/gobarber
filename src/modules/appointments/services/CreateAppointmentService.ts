@@ -53,6 +53,7 @@ export default class CreateAppointmentService {
                 name: providerFound.name,
                 email: providerFound.email,
                 password: providerFound.password,
+                avatar: providerFound.avatar,
             },
         };
     }

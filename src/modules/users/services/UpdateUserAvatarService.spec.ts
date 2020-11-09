@@ -18,9 +18,9 @@ describe('Update user avatar', () => {
             password: 'banana',
         });
 
-        updateUserAvatar.execute({
+        await updateUserAvatar.execute({
             userId: newUser.id,
-            avartarFileName: 'prasempre.jpg',
+            avartarFileName: 'avatar.jpg',
         });
 
         expect(newUser.avatar).toBe('avatar.jpg');

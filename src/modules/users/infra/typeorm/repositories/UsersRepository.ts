@@ -4,7 +4,6 @@ import User from '@modules/users/infra/typeorm/entities/User';
 
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 import ICreateUserDTO from '@modules/users/dtos/ICreateUserDTO';
-import IGetUserDTO from '@modules/users/dtos/IGetUserDTO';
 
 export default class UsersRepository implements IUsersRepository {
     private ormRepository: Repository<User>;
@@ -23,11 +22,11 @@ export default class UsersRepository implements IUsersRepository {
         return this.ormRepository.save(user);
     }
 
-    public async create(data: ICreateUserDTO): Promise<IGetUserDTO> {
+    public async create(data: ICreateUserDTO): Promise<User> {
         const newUser = this.ormRepository.create(data);
         await this.ormRepository.save(newUser);
 
-        return { id: newUser.id, name: newUser.name };
+        return newUser;
     }
 
     public async findByEmail(email: string): Promise<User | undefined> {
