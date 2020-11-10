@@ -3,5 +3,5 @@ export default interface IGetUserDTO {
     name: string;
     email: string;
     password: string;
-    avatar: string;
+    avatar?: string;
 }
