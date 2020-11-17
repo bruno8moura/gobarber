@@ -1,5 +1,6 @@
 // import AppError from '@shared/errors/AppError';
 import IMailProvider from '@shared/container/providers/MailProviders/models/IMailProvider';
+import AppError from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
 import IUsersRepository from '../repositories/IUsersRepository';
 // import IGetUserDTO from '../dtos/IGetUserDTO';
@@ -18,7 +19,13 @@ class SendForgotPasswordEmailService {
     ) {}
 
     public async execute({ email }: IRequest): Promise<void> {
-        this.mailProvider.sendMail(email, 'Recupera a senha!');
+        const checkUserExist = await this.usersRepository.findByEmail(email);
+
+        if (!checkUserExist) {
+            throw new AppError('User does not exists.');
+        }
+
+        await this.mailProvider.sendMail(email, 'Recupera a senha!');
     }
 }
 
