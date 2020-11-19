@@ -1,6 +1,7 @@
 import AppError from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
 import { differenceInHours } from 'date-fns';
+import { isUuid } from 'uuidv4';
 import IHashProvider from '../providers/HashProviders/models/IHashProvider';
 import IUsersRepository from '../repositories/IUsersRepository';
 import IUserTokensRepository from '../repositories/IUserTokensRepository';
@@ -22,6 +23,10 @@ class ResetPasswordService {
     ) {}
 
     public async execute({ token, newPassword }: IRequest): Promise<void> {
+        if (!isUuid(token)) {
+            throw new AppError('Invalid token');
+        }
+
         const foundUserToken = await this.userTokensRepository.findByToken(
             token,
         );
