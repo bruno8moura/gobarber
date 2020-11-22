@@ -3,13 +3,25 @@ import CreateUserService from '@modules/users/services/CreateUserService';
 import ICreateUserDTO from '@modules/users/dtos/ICreateUserDTO';
 import AppError from '@shared/errors/AppError';
 import FakeHashProvider from '@modules/users/providers/HashProviders/fakes/FakeHashProvider';
+import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 import CreateAppointmentService from './CreateAppointmentService';
 import FakeAppointmentsRepository from '../repositories/fakes/FakeAppointmentsRepository';
 
+let fakeUsersRepository: IUsersRepository;
+let fakeAppointmentsRepository: FakeAppointmentsRepository;
+let createAppointment: CreateAppointmentService;
+
 describe('CreateAppointment', () => {
+    beforeEach(() => {
+        fakeAppointmentsRepository = new FakeAppointmentsRepository();
+        fakeUsersRepository = new FakeUsersRepository();
+        createAppointment = new CreateAppointmentService(
+            fakeAppointmentsRepository,
+            fakeUsersRepository,
+        );
+    });
+
     it('should be able to create a new appointment', async () => {
-        const appointmentsRepository = new FakeAppointmentsRepository();
-        const usersRepository = new FakeUsersRepository();
         const fakeHashProvider = new FakeHashProvider();
 
         const newUser: ICreateUserDTO = {
@@ -19,13 +31,13 @@ describe('CreateAppointment', () => {
         };
 
         const createdUser = await new CreateUserService(
-            usersRepository,
+            fakeUsersRepository,
             fakeHashProvider,
         ).execute(newUser);
 
         const newAppointment = await new CreateAppointmentService(
-            appointmentsRepository,
-            usersRepository,
+            fakeAppointmentsRepository,
+            fakeUsersRepository,
         ).execute({
             date: new Date(),
             providerId: createdUser.id,
@@ -35,13 +47,7 @@ describe('CreateAppointment', () => {
     });
 
     it('should not be able to create two appoiments on the same time', async () => {
-        const fakeAppointmentRepository = new FakeAppointmentsRepository();
-        const fakeUsersRepository = new FakeUsersRepository();
         const fakeHashProvider = new FakeHashProvider();
-        const createAppointment = new CreateAppointmentService(
-            fakeAppointmentRepository,
-            fakeUsersRepository,
-        );
 
         const newUser: ICreateUserDTO = {
             name: 'Bruno Moura',
@@ -70,12 +76,6 @@ describe('CreateAppointment', () => {
     });
 
     it('should not be able to create an appointment without a valid provider', async () => {
-        const fakeAppointmentRepository = new FakeAppointmentsRepository();
-        const fakeUsersRepository = new FakeUsersRepository();
-        const createAppointment = new CreateAppointmentService(
-            fakeAppointmentRepository,
-            fakeUsersRepository,
-        );
         const appointmentDate = new Date();
 
         expect(

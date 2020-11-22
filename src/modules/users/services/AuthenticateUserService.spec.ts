@@ -4,20 +4,28 @@ import ICreateUserDTO from '@modules/users/dtos/ICreateUserDTO';
 import AppError from '@shared/errors/AppError';
 import FakeHashProvider from '../providers/HashProviders/fakes/FakeHashProvider';
 import AuthenticateUserService from './AuthenticateUserService';
+import IUsersRepository from '../repositories/IUsersRepository';
+import IHashProvider from '../providers/HashProviders/models/IHashProvider';
+
+let fakeUsersRepository: IUsersRepository;
+let fakeHashProvider: IHashProvider;
+let createUserService: CreateUserService;
+let authenticateUser: AuthenticateUserService;
 
 describe('AuthenticateUser', () => {
+    beforeEach(() => {
+        fakeUsersRepository = new FakeUsersRepository();
+        fakeHashProvider = new FakeHashProvider();
+        createUserService = new CreateUserService(
+            fakeUsersRepository,
+            fakeHashProvider,
+        );
+        authenticateUser = new AuthenticateUserService(
+            fakeUsersRepository,
+            fakeHashProvider,
+        );
+    });
     it('should be able to authenticate', async () => {
-        const fakeUsersRepository = new FakeUsersRepository();
-        const fakeHashProvider = new FakeHashProvider();
-        const createUserService = new CreateUserService(
-            fakeUsersRepository,
-            fakeHashProvider,
-        );
-        const authenticateUser = new AuthenticateUserService(
-            fakeUsersRepository,
-            fakeHashProvider,
-        );
-
         const newUser: ICreateUserDTO = {
             name: 'John Doe',
             email: 'jonhdoe@example.com',
@@ -35,17 +43,6 @@ describe('AuthenticateUser', () => {
     });
 
     it('should not be able to authenticate in order unknown email', async () => {
-        const fakeUsersRepository = new FakeUsersRepository();
-        const fakeHashProvider = new FakeHashProvider();
-        const createUserService = new CreateUserService(
-            fakeUsersRepository,
-            fakeHashProvider,
-        );
-        const authenticateUser = new AuthenticateUserService(
-            fakeUsersRepository,
-            fakeHashProvider,
-        );
-
         const newUser: ICreateUserDTO = {
             name: 'John Doe',
             email: 'jonhdoe@example.com',
@@ -55,7 +52,7 @@ describe('AuthenticateUser', () => {
         await createUserService.execute(newUser);
 
         const wrongEmail = 'anotherUserEmail@example.com';
-        expect(
+        await expect(
             authenticateUser.execute({
                 email: wrongEmail,
                 password: newUser.password,
@@ -64,17 +61,6 @@ describe('AuthenticateUser', () => {
     });
 
     it('should not be able to authenticate in order wrong password', async () => {
-        const fakeUsersRepository = new FakeUsersRepository();
-        const fakeHashProvider = new FakeHashProvider();
-        const createUserService = new CreateUserService(
-            fakeUsersRepository,
-            fakeHashProvider,
-        );
-        const authenticateUser = new AuthenticateUserService(
-            fakeUsersRepository,
-            fakeHashProvider,
-        );
-
         const newUser: ICreateUserDTO = {
             name: 'John Doe',
             email: 'jonhdoe@example.com',
@@ -84,7 +70,7 @@ describe('AuthenticateUser', () => {
         await createUserService.execute(newUser);
 
         const wrongPass = 'banana';
-        expect(
+        await expect(
             authenticateUser.execute({
                 email: newUser.email,
                 password: wrongPass,
